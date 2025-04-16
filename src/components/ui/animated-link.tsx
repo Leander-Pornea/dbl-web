@@ -1,41 +1,38 @@
 'use client';
+
 import type { Variants } from 'motion/react';
 import { motion, useAnimation } from 'motion/react';
 import type { HTMLAttributes } from 'react';
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
-export interface ArrowRightIconHandle {
+export interface LinkIconHandle {
   startAnimation: () => void;
   stopAnimation: () => void;
 }
 
-interface ArrowRightIconProps extends HTMLAttributes<HTMLDivElement> {
+interface LinkIconProps extends HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 
 const pathVariants: Variants = {
-  normal: { d: 'M5 12h14' },
+  initial: { pathLength: 1, pathOffset: 0, rotate: 0 },
   animate: {
-    d: ['M5 12h14', 'M5 12h9', 'M5 12h14'],
+    pathLength: [1, 0.97, 1, 0.97, 1],
+    pathOffset: [0, 0.05, 0, 0.05, 0],
+    rotate: [0, -5, 0],
     transition: {
-      duration: 0.4,
+      rotate: {
+        duration: 0.5,
+      },
+      duration: 1,
+      times: [0, 0.2, 0.4, 0.6, 1],
+      ease: 'easeInOut',
     },
   },
 };
 
-const secondaryPathVariants: Variants = {
-  normal: { d: 'm12 5 7 7-7 7', translateX: 0 },
-  animate: {
-    d: 'm12 5 7 7-7 7',
-    translateX: [0, -3, 0],
-    transition: {
-      duration: 0.4,
-    },
-  },
-};
-
-const ArrowRightIcon = forwardRef<ArrowRightIconHandle, ArrowRightIconProps>(
+const LinkIcon = forwardRef<LinkIconHandle, LinkIconProps>(
   ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
     const controls = useAnimation();
     const isControlledRef = useRef(false);
@@ -70,11 +67,10 @@ const ArrowRightIcon = forwardRef<ArrowRightIconHandle, ArrowRightIconProps>(
       },
       [controls, onMouseLeave]
     );
-
     return (
       <div
         className={cn(
-          `cursor-pointer select-none rounded-md transition-colors duration-200 flex items-center justify-center`,
+          `cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center`,
           className
         )}
         onMouseEnter={handleMouseEnter}
@@ -93,13 +89,13 @@ const ArrowRightIcon = forwardRef<ArrowRightIconHandle, ArrowRightIconProps>(
           strokeLinejoin="round"
         >
           <motion.path
-            d="M5 12h14"
+            d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
             variants={pathVariants}
             animate={controls}
           />
           <motion.path
-            d="m12 5 7 7-7 7"
-            variants={secondaryPathVariants}
+            d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+            variants={pathVariants}
             animate={controls}
           />
         </svg>
@@ -108,6 +104,6 @@ const ArrowRightIcon = forwardRef<ArrowRightIconHandle, ArrowRightIconProps>(
   }
 );
 
-ArrowRightIcon.displayName = 'ArrowRightIcon';
+LinkIcon.displayName = 'LinkIcon';
 
-export { ArrowRightIcon };
+export { LinkIcon };
